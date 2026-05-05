@@ -1,0 +1,16 @@
+query CurrentUserBoards($after: UUID, $first: Int) {
+    currentUser {
+        id
+        boards(after: $after, first: $first) {
+            nodes {
+                ...BoardFragment
+            }
+            pageInfo {
+                endCursor
+            }
+        }
+
+        createdAt
+        updatedAt
+    }
+}

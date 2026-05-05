@@ -1,0 +1,152 @@
+type BoardObject {
+	id: ID!
+	user: UserObject!
+	name: String!
+	slug: String!
+	description: String!
+	createdAt: DateTime!
+	updatedAt: DateTime
+}
+
+type BoardObjectConnection {
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
+	"""
+	A list of edges.
+	"""
+	edges: [BoardObjectEdge!]!
+	"""
+	A list of nodes.
+	"""
+	nodes: [BoardObject!]!
+}
+
+"""
+An edge in a connection.
+"""
+type BoardObjectEdge {
+	"""
+	The item at the end of the edge
+	"""
+	node: BoardObject!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
+}
+
+input BoardParams {
+	name: String!
+	slug: String!
+	description: String!
+	visibility: BoardVisibility!
+}
+
+enum BoardVisibility {
+	PRIVATE
+	USERS
+	PUBLIC
+}
+
+"""
+Implement the DateTime<Utc> scalar
+
+The input/output is a string in RFC3339 format.
+"""
+scalar DateTime
+
+type IdentityUserObject {
+	id: ID!
+	username: String!
+	displayName: String!
+	initials: String!
+	languageCode: String!
+	countryCode: String!
+	avatarImageUrl: Url!
+	createdAt: DateTime!
+	updatedAt: DateTime
+}
+
+type InfoObject {
+	builtAt: DateTime!
+	version: String!
+}
+
+type MutationRoot {
+	createBoard(params: BoardParams!): BoardObject!
+}
+
+"""
+Information about pagination in a connection
+"""
+type PageInfo {
+	"""
+	When paginating backwards, are there more items?
+	"""
+	hasPreviousPage: Boolean!
+	"""
+	When paginating forwards, are there more items?
+	"""
+	hasNextPage: Boolean!
+	"""
+	When paginating backwards, the cursor to continue.
+	"""
+	startCursor: String
+	"""
+	When paginating forwards, the cursor to continue.
+	"""
+	endCursor: String
+}
+
+type QueryRoot {
+	board(idOrSlug: String!): BoardObject
+	boards(after: UUID, first: Int): BoardObjectConnection!
+	currentUser: UserObject
+	info: InfoObject!
+	user(username: String!): UserObject
+}
+
+"""
+A UUID is a unique 128-bit number, stored as 16 octets. UUIDs are parsed as
+Strings within GraphQL. UUIDs are used to assign unique identifiers to
+entities without requiring a central allocating authority.
+
+# References
+
+* [Wikipedia: Universally Unique Identifier](http://en.wikipedia.org/wiki/Universally_unique_identifier)
+* [RFC4122: A Universally Unique Identifier (UUID) URN Namespace](http://tools.ietf.org/html/rfc4122)
+"""
+scalar UUID
+
+"""
+URL is a String implementing the [URL Standard](http://url.spec.whatwg.org/)
+"""
+scalar Url
+
+type UserObject {
+	id: ID!
+	identityUser: IdentityUserObject!
+	boards(after: UUID, first: Int): BoardObjectConnection!
+	createdAt: DateTime!
+	updatedAt: DateTime
+}
+
+"""
+Directs the executor to include this field or fragment only when the `if` argument is true.
+"""
+directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+"""
+Directs the executor to skip this field or fragment when the `if` argument is true.
+"""
+directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+"""
+Provides a scalar specification URL for specifying the behavior of custom scalar types.
+"""
+directive @specifiedBy(url: String!) on SCALAR
+schema {
+	query: QueryRoot
+	mutation: MutationRoot
+}
+

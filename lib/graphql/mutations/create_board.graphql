@@ -1,0 +1,5 @@
+mutation CreateBoard($params: BoardParams!) {
+    createBoard(params: $params) {
+        ...BoardFragment
+    }
+}
