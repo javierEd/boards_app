@@ -25,7 +25,7 @@ class LoadingDialog {
 
   final BuildContext context;
 
-  close() {
+  void close() {
     context.pop();
   }
 }
