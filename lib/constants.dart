@@ -9,7 +9,15 @@ const colorPlayIcon = Color(0x999E9E9E);
 const colorPrimary = Color(0xFFFC7753);
 const colorTranslucent = Color(0x22000000);
 
+const keyUsername = 'username';
+const keySlug = 'slug';
+
 const routeNameHome = 'home';
+const routeNameNewBoard = 'new_board';
+const routeNameSettings = 'settings';
+const routeNameShowBoard = 'show_board';
+const routeNameShowUser = 'show_user';
+const routeNameShowUserBoard = 'show_user_board';
 
 const urlPrivacy = 'https://mango3.app/privacy';
 const urlTerms = 'https://mango3.app/terms';

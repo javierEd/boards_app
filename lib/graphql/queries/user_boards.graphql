@@ -1,0 +1,13 @@
+query UserBoards($username: String!, $after: UUID, $first: Int) {
+    user(username: $username) {
+        ...UserFragment
+        boards(after: $after, first: $first) {
+            nodes {
+                ...BoardFragment
+            }
+            pageInfo {
+                endCursor
+            }
+        }
+    }
+}

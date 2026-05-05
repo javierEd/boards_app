@@ -1,0 +1,8 @@
+fragment BoardFragment on BoardObject {
+    id
+    name
+    slug
+    description
+    createdAt
+    updatedAt
+}

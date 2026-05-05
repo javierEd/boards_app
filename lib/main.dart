@@ -82,6 +82,9 @@ class App extends StatelessWidget {
                 }),
               ),
             ),
+            inputDecorationTheme: InputDecorationTheme(
+              border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+            ),
           ),
           routerConfig: GoRouterExt.setup(),
         ),
