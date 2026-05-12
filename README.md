@@ -9,9 +9,8 @@ Cloud storage platform.
 
 ## Environment variables
 
-| Name          | Type   | Default                         |
-| ------------- | ------ | ------------------------------- |
-| BOARDS_API_URL | String | https://api.boards.mango3.app/ |
-| BOARDS_URL     | String | https://boards.mango3.app/     |
-
-Other environment variables: https://github.com/mangocubed/toolbox#environment-variables
+| Name             | Type   | Default                        |
+| ---------------- | ------ | ------------------------------ |
+| BOARDS_API_URL   | String | https://api.boards.mango3.app/ |
+| BOARDS_APP_TOKEN | String |                                |
+| BOARDS_URL       | String | https://boards.mango3.app/     |

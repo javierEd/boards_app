@@ -121,7 +121,7 @@ class _ShowUserScreenState extends State<ShowUserScreen> {
         }
 
         return ScreenTitle(
-          title: '@${user.identityUser.username}',
+          title: '@${user.username}',
           child: Scaffold(
             appBar: AppBar(
               foregroundColor: Colors.white,
@@ -135,14 +135,11 @@ class _ShowUserScreenState extends State<ShowUserScreen> {
                   delegate: SliverChildListDelegate([
                     const SizedBox(height: 16),
                     Center(
-                      child: CircleAvatar(
-                        radius: 48,
-                        child: Text(user.identityUser.initials, style: TextStyle(fontSize: 48)),
-                      ),
+                      child: CircleAvatar(radius: 48, child: Text(user.initials, style: TextStyle(fontSize: 48))),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      '@${user.identityUser.username}',
+                      '@${user.username}',
                       textAlign: TextAlign.center,
                       style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white),
                     ),

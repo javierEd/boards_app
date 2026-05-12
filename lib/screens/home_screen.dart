@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'package:toolbox/identity_client.dart';
-
 import '../components/account_button.dart';
 import '../components/board_item.dart';
 import '../components/screen_title.dart';
 import '../constants.dart';
 import '../graphql/queries/current_user_boards.graphql.dart';
+import '../session.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -57,7 +56,7 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text('Home'),
           actions: [
-            IdentityClient.hasAccessToken
+            Session.hasBearer
                 ? Padding(
                     padding: EdgeInsets.only(right: 12),
                     child: IconButton.outlined(
@@ -72,7 +71,7 @@ class HomeScreen extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16),
-          child: IdentityClient.hasAccessToken ? _getMyBoards(context) : SizedBox(),
+          child: Session.hasBearer ? _getMyBoards(context) : SizedBox(),
         ),
       ),
     );

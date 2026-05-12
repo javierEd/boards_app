@@ -9,6 +9,8 @@ const colorPlayIcon = Color(0x999E9E9E);
 const colorPrimary = Color(0xFFFC7753);
 const colorTranslucent = Color(0x22000000);
 
+const headerXAppToken = 'X-App-Token';
+
 const keyUsername = 'username';
 const keySlug = 'slug';
 

@@ -30,7 +30,7 @@ class _ShowBoardScreenState extends State<ShowBoardScreen> {
       builder: (result, {fetchMore, refetch}) {
         final board = result.parsedData?.board;
 
-        if (board == null || (widget.username != null && board.user.identityUser.username != widget.username)) {
+        if (board == null || (widget.username != null && board.user.username != widget.username)) {
           if (result.isLoading) {
             return const Center(child: CircularProgressIndicator());
           } else {
@@ -39,14 +39,14 @@ class _ShowBoardScreenState extends State<ShowBoardScreen> {
         }
 
         return ScreenTitle(
-          title: '${board.name} by @${board.user.identityUser.username}',
+          title: '${board.name} by @${board.user.username}',
           child: Scaffold(
             appBar: AppBar(
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(board.name),
-                  Text('by @${board.user.identityUser.username}', style: TextStyle(fontSize: 12)),
+                  Text('by @${board.user.username}', style: TextStyle(fontSize: 12)),
                 ],
               ),
               foregroundColor: Colors.white,

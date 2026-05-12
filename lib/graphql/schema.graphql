@@ -103,18 +103,6 @@ The input/output is a string in RFC3339 format.
 """
 scalar DateTime
 
-type IdentityUserObject {
-	id: ID!
-	username: String!
-	displayName: String!
-	initials: String!
-	languageCode: String!
-	countryCode: String!
-	avatarImageUrl: Url!
-	createdAt: DateTime!
-	updatedAt: DateTime
-}
-
 type InfoObject {
 	builtAt: DateTime!
 	version: String!
@@ -167,10 +155,29 @@ type MutationRoot {
 	createBoard(params: BoardParams!): BoardObject!
 	createCard(params: CardParams!): CardObject!
 	createList(params: ListParams!): ListObject!
+	createSession(params: SessionParams!): SessionObject!
+	createUser(params: UserParams!): UserObject!
+	deleteBoard(id: UUID!): Boolean!
+	deleteCard(id: UUID!): Boolean!
+	deleteList(id: UUID!): Boolean!
+	finishSession: Boolean!
+	updateBoard(id: UUID!, params: BoardParams!): BoardObject!
 	updateCardList(id: UUID!, listId: UUID!, position: Int!): CardObject!
 	updateCardPosition(id: UUID!, position: Int!): CardObject!
+	updateList(id: UUID!, params: UpdateListParams!): ListObject!
 	updateListPosition(id: UUID!, position: Int!): ListObject!
 }
+
+"""
+ISO 8601 calendar date without timezone.
+Format: %Y-%m-%d
+
+# Examples
+
+* `1994-11-13`
+* `2000-02-24`
+"""
+scalar NaiveDate
 
 """
 Information about pagination in a connection
@@ -203,6 +210,19 @@ type QueryRoot {
 	user(username: String!): UserObject
 }
 
+type SessionObject {
+	id: ID!
+	token: String!
+	expiresAt: DateTime!
+	createdAt: DateTime!
+	updatedAt: DateTime
+}
+
+input SessionParams {
+	usernameOrEmail: String!
+	password: String!
+}
+
 """
 A UUID is a unique 128-bit number, stored as 16 octets. UUIDs are parsed as
 Strings within GraphQL. UUIDs are used to assign unique identifiers to
@@ -215,17 +235,27 @@ entities without requiring a central allocating authority.
 """
 scalar UUID
 
-"""
-URL is a String implementing the [URL Standard](http://url.spec.whatwg.org/)
-"""
-scalar Url
+input UpdateListParams {
+	name: String!
+}
 
 type UserObject {
 	id: ID!
-	identityUser: IdentityUserObject!
+	username: String!
+	initials: String!
+	displayName: String!
 	boards(after: UUID, first: Int): BoardObjectConnection!
 	createdAt: DateTime!
 	updatedAt: DateTime
+}
+
+input UserParams {
+	username: String!
+	email: String!
+	password: String!
+	fullName: String!
+	birthdate: NaiveDate
+	countryCode: String!
 }
 
 """

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:toolbox/identity_client.dart';
-
 import '../components/login_button.dart';
+import '../session.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -18,17 +17,7 @@ class SettingsScreen extends StatelessWidget {
           child: Column(
             spacing: 16,
             children: [
-              SizedBox(
-                width: double.infinity,
-                child: IdentityClient.hasAccessToken
-                    ? OutlinedButton.icon(
-                        onPressed: IdentityClient.goToIdentity,
-                        icon: const Icon(Icons.manage_accounts_rounded),
-                        label: const Text('Account'),
-                      )
-                    : LoginButton(),
-              ),
-              IdentityClient.hasAccessToken
+              Session.hasBearer
                   ? SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
@@ -37,27 +26,22 @@ class SettingsScreen extends StatelessWidget {
                             context: context,
                             builder: (context) => AlertDialog(
                               title: const Text('Confirm your action'),
-                              content: const Text('Are you sure you want to disconnect your user account?'),
+                              content: const Text('Are you sure you want to logout?'),
                               actions: [
                                 OutlinedButton(
                                   child: const Text('Cancel'),
-                                  onPressed: () => Navigator.of(context).pop(), // Closes dialog
+                                  onPressed: () => Navigator.of(context).pop(),
                                 ),
-                                FilledButton(
-                                  child: const Text('Confirm'),
-                                  onPressed: () async {
-                                    await IdentityClient.revoke();
-                                  }, // Closes dialog
-                                ),
+                                FilledButton(child: const Text('Confirm'), onPressed: () {}),
                               ],
                             ),
                           );
                         },
                         icon: const Icon(Icons.logout_rounded),
-                        label: const Text('Disconnect'),
+                        label: const Text('Logout'),
                       ),
                     )
-                  : SizedBox(),
+                  : LoginButton(),
             ],
           ),
         ),

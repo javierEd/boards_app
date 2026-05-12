@@ -27,13 +27,10 @@ class AccountButton extends StatelessWidget {
                       spacing: 8,
                       children: [
                         Center(
-                          child: CircleAvatar(
-                            radius: 32,
-                            child: Text(user.identityUser.initials, style: TextStyle(fontSize: 32)),
-                          ),
+                          child: CircleAvatar(radius: 32, child: Text(user.initials, style: TextStyle(fontSize: 32))),
                         ),
                         Text(
-                          '@${user.identityUser.username}',
+                          '@${user.username}',
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
                         ),
@@ -41,10 +38,8 @@ class AccountButton extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton.icon(
-                            onPressed: () => context.goNamed(
-                              routeNameShowUser,
-                              pathParameters: {keyUsername: user.identityUser.username},
-                            ),
+                            onPressed: () =>
+                                context.goNamed(routeNameShowUser, pathParameters: {keyUsername: user.username}),
                             icon: const Icon(Icons.person_rounded),
                             label: const Text('Profile'),
                           ),
@@ -114,7 +109,7 @@ class AccountButton extends StatelessWidget {
         if (user != null) {
           return IconButton(
             onPressed: () => _showAccountBottomSheet(context, user: user),
-            icon: CircleAvatar(child: Text(user.identityUser.initials)),
+            icon: CircleAvatar(child: Text(user.initials)),
           );
         } else {
           return IconButton.outlined(
