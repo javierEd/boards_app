@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:toolbox/components.dart';
 
 import '../graphql/schema.graphql.dart';
 import '../graphql/mutations/create_card.graphql.dart';
 import '../graphql_client.dart';
 import 'form_container.dart';
+import 'snackbar_alert.dart';
 import 'text_input_field.dart';
 
 Future<dynamic> showNewCardDialog(BuildContext context, {required listId}) {

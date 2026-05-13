@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:toolbox/components.dart';
 
 import '../graphql/fragments/card_fragment.graphql.dart';
 import '../graphql/mutations/update_card_list.graphql.dart';
 import '../graphql/mutations/update_card_position.graphql.dart';
 import '../graphql_client.dart';
 import 'loading_dialog.dart';
+import 'snackbar_alert.dart';
 
 class DraggableCardItem extends StatefulWidget {
   const DraggableCardItem({super.key, required this.card, required this.onDragOutside, required this.onDragEnded});

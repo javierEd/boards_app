@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:toolbox/components.dart';
 import 'package:world_info_plus/world_info_plus.dart';
 
 import '../components/date_field.dart';
@@ -8,6 +7,7 @@ import '../components/dropdown_field.dart';
 import '../components/form_container.dart';
 import '../components/password_input_field.dart';
 import '../components/screen_title.dart';
+import '../components/snackbar_alert.dart';
 import '../components/text_input_field.dart';
 import '../constants.dart';
 import '../graphql/schema.graphql.dart';

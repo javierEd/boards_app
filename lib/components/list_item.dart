@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:toolbox/components.dart';
-
 import '../components/loading_dialog.dart';
 import '../graphql/fragments/list_fragment.graphql.dart';
 import '../graphql/mutations/update_list_position.graphql.dart';
@@ -11,6 +9,7 @@ import '../graphql/queries/list_cards.graphql.dart';
 import '../graphql_client.dart';
 import 'card_item.dart';
 import 'new_card_dialog.dart';
+import 'snackbar_alert.dart';
 
 class DraggableListItem extends StatefulWidget {
   const DraggableListItem({

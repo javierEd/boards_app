@@ -42,12 +42,6 @@ dependencies:
     url_launcher: ^6.3.2
     world_info_plus: ^1.0.1
 
-    toolbox:
-        git:
-            url: https://github.com/mangocubed/toolbox.git
-            path: flutter
-            ref: 044f6b8
-
 dev_dependencies:
     flutter_test:
         sdk: flutter
