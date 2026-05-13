@@ -5,8 +5,7 @@ import 'package:toolbox/components.dart';
 import '../graphql/schema.graphql.dart';
 import '../graphql/mutations/create_list.graphql.dart';
 import '../graphql_client.dart';
-import 'loading_dialog.dart';
-import 'submit_button.dart';
+import 'form_container.dart';
 import 'text_input_field.dart';
 
 Future<dynamic> showNewListDialog(BuildContext context, {required boardId}) {
@@ -34,8 +33,6 @@ class _NewListFormState extends State<_NewListForm> {
   String? _errorName;
 
   void _attemptToCreateList() async {
-    final loadingDialog = showLoadingDialog(context);
-
     setState(() {
       _errorName = null;
     });
@@ -71,35 +68,27 @@ class _NewListFormState extends State<_NewListForm> {
     } else {
       showSnackBarAlert(context, 'Failed to create list');
     }
-
-    loadingDialog.close();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return FormContainer(
+      formKey: _formNewList,
       padding: EdgeInsets.all(16),
       width: 480,
-      child: Form(
-        key: _formNewList,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          spacing: 12,
-          children: [
-            Text('New list', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            TextInputField(
-              labelText: 'Name',
-              errorText: _errorName,
-              required: true,
-              maxLines: 1,
-              onSaved: (value) {
-                _name = value ?? '';
-              },
-            ),
-            SubmitButton(onPressed: _attemptToCreateList),
-          ],
+      onSubmit: _attemptToCreateList,
+      fields: [
+        Text('New list', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        TextInputField(
+          labelText: 'Name',
+          errorText: _errorName,
+          required: true,
+          maxLines: 1,
+          onSaved: (value) {
+            _name = value ?? '';
+          },
         ),
-      ),
+      ],
     );
   }
 }

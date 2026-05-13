@@ -5,8 +5,7 @@ import 'package:toolbox/components.dart';
 import '../graphql/schema.graphql.dart';
 import '../graphql/mutations/create_card.graphql.dart';
 import '../graphql_client.dart';
-import 'loading_dialog.dart';
-import 'submit_button.dart';
+import 'form_container.dart';
 import 'text_input_field.dart';
 
 Future<dynamic> showNewCardDialog(BuildContext context, {required listId}) {
@@ -34,8 +33,6 @@ class _NewCardFormState extends State<_NewCardForm> {
   String? _errorContent;
 
   void _attemptToCreateCard() async {
-    final loadingDialog = showLoadingDialog(context);
-
     setState(() {
       _errorContent = null;
     });
@@ -71,35 +68,27 @@ class _NewCardFormState extends State<_NewCardForm> {
     } else {
       showSnackBarAlert(context, 'Failed to create card');
     }
-
-    loadingDialog.close();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
+    return FormContainer(
+      formKey: _formNewCard,
       width: 480,
-      child: Form(
-        key: _formNewCard,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          spacing: 12,
-          children: [
-            Text('New card', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            TextInputField(
-              labelText: 'Content',
-              errorText: _errorContent,
-              required: true,
-              maxLines: 4,
-              onSaved: (value) {
-                _content = value ?? '';
-              },
-            ),
-            SubmitButton(onPressed: _attemptToCreateCard),
-          ],
+      padding: EdgeInsets.all(16),
+      onSubmit: _attemptToCreateCard,
+      fields: [
+        Text('New card', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        TextInputField(
+          labelText: 'Content',
+          errorText: _errorContent,
+          required: true,
+          maxLines: 4,
+          onSaved: (value) {
+            _content = value ?? '';
+          },
         ),
-      ),
+      ],
     );
   }
 }

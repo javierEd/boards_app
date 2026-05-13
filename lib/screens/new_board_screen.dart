@@ -1,13 +1,13 @@
-import 'package:boards/constants.dart';
 import 'package:boards/graphql/schema.graphql.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:toolbox/components.dart';
 
-import '../components/loading_dialog.dart';
+import '../components/dropdown_field.dart';
+import '../components/form_container.dart';
 import '../components/screen_title.dart';
-import '../components/submit_button.dart';
 import '../components/text_input_field.dart';
+import '../constants.dart';
 import '../graphql_client.dart';
 import '../graphql/mutations/create_board.graphql.dart';
 
@@ -30,8 +30,6 @@ class _NewBoardScreenState extends State<NewBoardScreen> {
   String? _errorSlug;
 
   void _attemptToCreateBoard() async {
-    final loadingDialog = showLoadingDialog(context);
-
     setState(() {
       _errorName = null;
       _errorSlug = null;
@@ -71,8 +69,6 @@ class _NewBoardScreenState extends State<NewBoardScreen> {
     } else {
       showSnackBarAlert(context, 'Failed to create board');
     }
-
-    loadingDialog.close();
   }
 
   @override
@@ -83,63 +79,57 @@ class _NewBoardScreenState extends State<NewBoardScreen> {
         appBar: AppBar(title: Text('New board')),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(12),
-          child: Form(
-            key: _formNewBoard,
-            child: Column(
-              spacing: 12,
-              children: [
-                TextInputField(
-                  labelText: 'Name',
-                  errorText: _errorName,
-                  required: true,
-                  maxLines: 1,
-                  onChanged: (value) {
-                    _slugController.text =
-                        value
-                            ?.replaceFirst(RegExp(r'[^a-zA-Z0-9]+$'), '')
-                            .replaceAll(RegExp(r'[^a-zA-Z0-9]+'), '-')
-                            .toLowerCase() ??
-                        '';
-                  },
-                  onSaved: (value) {
-                    _name = value ?? '';
-                  },
-                ),
-                TextInputField(
-                  controller: _slugController,
-                  labelText: 'Slug',
-                  errorText: _errorSlug,
-                  required: true,
-                  maxLines: 1,
-                  onSaved: (value) {
-                    _slug = value ?? '';
-                  },
-                ),
-                TextInputField(
-                  labelText: 'Description',
-                  maxLines: 4,
-                  onSaved: (value) {
-                    _description = value ?? '';
-                  },
-                ),
-                DropdownButtonFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Visibility',
-                    border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
-                  ),
-                  initialValue: _visibility,
-                  items: [
-                    DropdownMenuItem(value: Enum$BoardVisibility.PRIVATE, child: Text('Private')),
-                    DropdownMenuItem(value: Enum$BoardVisibility.USERS, child: Text('Only users')),
-                    DropdownMenuItem(value: Enum$BoardVisibility.PUBLIC, child: Text('Public')),
-                  ],
-                  onChanged: (value) {
-                    _visibility = value!;
-                  },
-                ),
-                SubmitButton(onPressed: _attemptToCreateBoard),
-              ],
-            ),
+          child: FormContainer(
+            formKey: _formNewBoard,
+            onSubmit: _attemptToCreateBoard,
+            fields: [
+              TextInputField(
+                labelText: 'Name',
+                errorText: _errorName,
+                required: true,
+                maxLines: 1,
+                onChanged: (value) {
+                  _slugController.text =
+                      value
+                          ?.replaceFirst(RegExp(r'[^a-zA-Z0-9]+$'), '')
+                          .replaceAll(RegExp(r'[^a-zA-Z0-9]+'), '-')
+                          .toLowerCase() ??
+                      '';
+                },
+                onSaved: (value) {
+                  _name = value ?? '';
+                },
+              ),
+              TextInputField(
+                controller: _slugController,
+                labelText: 'Slug',
+                errorText: _errorSlug,
+                required: true,
+                maxLines: 1,
+                onSaved: (value) {
+                  _slug = value ?? '';
+                },
+              ),
+              TextInputField(
+                labelText: 'Description',
+                maxLines: 4,
+                onSaved: (value) {
+                  _description = value ?? '';
+                },
+              ),
+              DropdownField(
+                labelText: 'Visibility',
+                initialValue: _visibility,
+                items: [
+                  DropdownMenuItem(value: Enum$BoardVisibility.PRIVATE, child: Text('Private')),
+                  DropdownMenuItem(value: Enum$BoardVisibility.USERS, child: Text('Only users')),
+                  DropdownMenuItem(value: Enum$BoardVisibility.PUBLIC, child: Text('Public')),
+                ],
+                onChanged: (value) {
+                  _visibility = value!;
+                },
+              ),
+            ],
           ),
         ),
       ),

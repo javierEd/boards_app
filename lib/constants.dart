@@ -16,6 +16,7 @@ const keySlug = 'slug';
 
 const routeNameHome = 'home';
 const routeNameNewBoard = 'new_board';
+const routeNameRegister = 'register';
 const routeNameSettings = 'settings';
 const routeNameShowBoard = 'show_board';
 const routeNameShowUser = 'show_user';

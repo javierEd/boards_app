@@ -41,7 +41,7 @@ class SettingsScreen extends StatelessWidget {
                         label: const Text('Logout'),
                       ),
                     )
-                  : LoginButton(),
+                  : const LoginButton(),
             ],
           ),
         ),

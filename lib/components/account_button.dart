@@ -46,7 +46,7 @@ class AccountButton extends StatelessWidget {
                         ),
                       ],
                     )
-                  : const SizedBox(width: double.infinity, child: LoginButton()),
+                  : const LoginButton(),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
