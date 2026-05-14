@@ -87,7 +87,7 @@ class SessionManager {
     return result;
   }
 
-  static attemptToRefresh(GraphQLClient graphQLClient) async {
+  static Future<void> attemptToRefresh(GraphQLClient graphQLClient) async {
     final now = DateTime.now();
 
     if (_session == null ||
