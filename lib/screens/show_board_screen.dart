@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../components/edit_board_dialog.dart';
 import '../components/list_item.dart';
 import '../components/new_list_dialog.dart';
 import '../components/screen_title.dart';
 import '../constants.dart';
 import '../graphql/queries/board.graphql.dart';
 import '../graphql/queries/board_lists.graphql.dart';
+import '../router.dart';
 import '../screens/not_found_screen.dart';
 
 class ShowBoardScreen extends StatefulWidget {
-  final String? username;
-
-  final String slug;
   const ShowBoardScreen({super.key, this.username, required this.slug});
+
+  final String? username;
+  final String slug;
 
   @override
   State<ShowBoardScreen> createState() => _ShowBoardScreenState();
 }
 
-class _ShowBoardScreenState extends State<ShowBoardScreen> {
+class _ShowBoardScreenState extends State<ShowBoardScreen> with RouteAware {
   String? _draggingListId;
   bool _draggingCard = false;
-  int _refetchListsCount = 0;
+  int _refetchListsCount = -9007199254740991;
+  Future<QueryResult<Query$Board>?> Function()? _refetch;
 
   void _refetchLists() {
     setState(() {
@@ -31,10 +35,35 @@ class _ShowBoardScreenState extends State<ShowBoardScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final currentRoute = ModalRoute.of(context);
+
+    if (currentRoute != null) {
+      routeObserver.subscribe(this, currentRoute);
+    }
+  }
+
+  @override
+  void didPopNext() {
+    _refetch?.call();
+    _refetchLists();
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Query$Board$Widget(
       options: Options$Query$Board(variables: Variables$Query$Board(idOrSlug: widget.slug)),
       builder: (result, {fetchMore, refetch}) {
+        _refetch ??= refetch;
+
         final board = result.parsedData?.board;
 
         if (board == null || (widget.username != null && board.user.username != widget.username)) {
@@ -56,8 +85,15 @@ class _ShowBoardScreenState extends State<ShowBoardScreen> {
                   Text('by @${board.user.username}', style: TextStyle(fontSize: 12)),
                 ],
               ),
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.transparent,
+              actions: (board.isEditable
+                  ? [
+                      IconButton(
+                        onPressed: () => showEditBoardDialog(context, board: board),
+                        tooltip: 'Edit',
+                        icon: Icon(Icons.edit_rounded),
+                      ),
+                    ]
+                  : null),
               leading: BackButton(onPressed: () => context.goNamed(routeNameHome)),
             ),
             body: SizedBox(
@@ -135,9 +171,8 @@ class _ShowBoardScreenState extends State<ShowBoardScreen> {
                                   SizedBox(
                                     width: 320,
                                     child: OutlinedButton(
-                                      onPressed: () {
-                                        showNewListDialog(context, boardId: board.id).then((_) => refetch?.call());
-                                      },
+                                      onPressed: () =>
+                                          showNewListDialog(context, boardId: board.id).then((_) => refetch?.call()),
                                       child: Text('NEW LIST'),
                                     ),
                                   ),
