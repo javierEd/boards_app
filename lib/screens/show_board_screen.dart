@@ -1,11 +1,15 @@
+import 'package:boards/graphql/mutations/delete_board.graphql.dart';
+import 'package:boards/graphql_client.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../components/edit_board_dialog.dart';
 import '../components/list_item.dart';
+import '../components/loading_dialog.dart';
 import '../components/new_list_dialog.dart';
 import '../components/screen_title.dart';
+import '../components/snackbar_alert.dart';
 import '../constants.dart';
 import '../graphql/queries/board.graphql.dart';
 import '../graphql/queries/board_lists.graphql.dart';
@@ -27,6 +31,28 @@ class _ShowBoardScreenState extends State<ShowBoardScreen> with RouteAware {
   bool _draggingCard = false;
   int _refetchListsCount = -9007199254740991;
   Future<QueryResult<Query$Board>?> Function()? _refetch;
+
+  Future<void> _attemptToDeleteBoard(String id) async {
+    final loadingDialog = showLoadingDialog(context);
+    final graphQLClient = context.graphQLClient.value;
+    final result = await graphQLClient.mutate$DeleteBoard(
+      Options$Mutation$DeleteBoard(variables: Variables$Mutation$DeleteBoard(id: id)),
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    if (result.parsedData?.deleteBoard == true) {
+      context.pop();
+    } else {
+      final errors = result.exception?.graphqlErrors.first;
+
+      showSnackBarAlert(context, errors?.message ?? 'Failed to delete board');
+    }
+
+    loadingDialog.close();
+  }
 
   void _refetchLists() {
     setState(() {
@@ -91,6 +117,36 @@ class _ShowBoardScreenState extends State<ShowBoardScreen> with RouteAware {
                         onPressed: () => showEditBoardDialog(context, board: board),
                         tooltip: 'Edit',
                         icon: Icon(Icons.edit_rounded),
+                      ),
+                      PopupMenuButton(
+                        icon: Icon(Icons.more_vert_rounded),
+                        tooltip: 'More',
+                        position: PopupMenuPosition.under,
+                        onSelected: (value) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Confirm your action'),
+                              content: const Text('Are you sure you want to delete this board?'),
+                              actions: [
+                                OutlinedButton(child: const Text('Cancel'), onPressed: () => context.pop()),
+                                FilledButton(
+                                  child: const Text('Confirm'),
+                                  onPressed: () {
+                                    context.pop();
+                                    _attemptToDeleteBoard(board.id);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 1,
+                            child: ListTile(leading: Icon(Icons.delete_rounded), title: Text('Delete')),
+                          ),
+                        ],
                       ),
                     ]
                   : null),

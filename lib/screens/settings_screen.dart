@@ -1,4 +1,6 @@
+import 'package:boards/components/loading_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../components/login_buttons.dart';
 import '../components/snackbar_alert.dart';
@@ -8,17 +10,16 @@ class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   Future<void> _attemptToLogout(BuildContext context) async {
+    final loadingDialog = showLoadingDialog(context);
     final result = await SessionManager.attemptToLogout(context);
 
-    if (!context.mounted) {
-      return;
+    if (context.mounted && result.parsedData?.finishSession != true) {
+      final errors = result.exception?.graphqlErrors.first;
+
+      showSnackBarAlert(context, errors?.message ?? 'Failed to logout');
     }
 
-    final errors = result.exception?.graphqlErrors.first;
-
-    if (errors != null) {
-      showSnackBarAlert(context, errors.message);
-    }
+    loadingDialog.close();
   }
 
   @override
@@ -43,11 +44,14 @@ class SettingsScreen extends StatelessWidget {
                               title: const Text('Confirm your action'),
                               content: const Text('Are you sure you want to logout?'),
                               actions: [
-                                OutlinedButton(
-                                  child: const Text('Cancel'),
-                                  onPressed: () => Navigator.of(context).pop(),
+                                OutlinedButton(child: const Text('Cancel'), onPressed: () => context.pop()),
+                                FilledButton(
+                                  child: const Text('Confirm'),
+                                  onPressed: () {
+                                    context.pop();
+                                    _attemptToLogout(context);
+                                  },
                                 ),
-                                FilledButton(child: const Text('Confirm'), onPressed: () => _attemptToLogout(context)),
                               ],
                             ),
                           );

@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:boards/graphql/fragments/session_fragment.graphql.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:restart_app/restart_app.dart';
 
 import 'constants.dart';
+import 'graphql/fragments/session_fragment.graphql.dart';
 import 'graphql/mutations/create_session.graphql.dart';
 import 'graphql/mutations/finish_session.graphql.dart';
 import 'graphql/mutations/refresh_session.graphql.dart';
