@@ -1,0 +1,72 @@
+import 'package:boards/graphql/fragments/board_fragment.graphql.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../constants.dart';
+import '../graphql/schema.graphql.dart';
+import '../graphql/mutations/update_board.graphql.dart';
+import '../graphql_client.dart';
+import 'board_form.dart';
+import 'snackbar_alert.dart';
+
+Future<dynamic> showEditBoardDialog(BuildContext context, {required board}) {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Edit Board'),
+        content: _EditBoardForm(board: board),
+      );
+    },
+  );
+}
+
+class _EditBoardForm extends StatelessWidget {
+  _EditBoardForm({required this.board});
+
+  final Fragment$BoardFragment board;
+
+  final _formEditBoard = GlobalKey<FormState>();
+
+  Future<Map<String, dynamic>?> _attemptToUpdateBoard(BuildContext context, Input$BoardParams params) async {
+    final graphQLClient = context.graphQLClient.value;
+    final result = await graphQLClient.mutate$UpdateBoard(
+      Options$Mutation$UpdateBoard(
+        variables: Variables$Mutation$UpdateBoard(id: board.id, params: params),
+      ),
+    );
+
+    if (!context.mounted) {
+      return null;
+    }
+
+    final errors = result.exception?.graphqlErrors.first;
+    final updatedBoard = result.parsedData?.updateBoard;
+
+    if (updatedBoard != null) {
+      showSnackBarAlert(context, 'Board updated successfully');
+
+      if (board.slug == result.parsedData?.updateBoard.slug) {
+        context.pop();
+      } else {
+        context.pop();
+        context.goNamed(routeNameShowBoard, pathParameters: {keySlug: updatedBoard.slug});
+      }
+
+      return null;
+    } else {
+      showSnackBarAlert(context, errors?.message ?? 'Failed to update board');
+
+      return errors?.extensions?['params'];
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BoardForm(
+      formKey: _formEditBoard,
+      initialValues: board,
+      onSubmit: (params) => _attemptToUpdateBoard(context, params),
+    );
+  }
+}
