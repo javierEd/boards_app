@@ -9,6 +9,7 @@ import '../graphql/mutations/update_list_position.graphql.dart';
 import '../graphql/queries/list_cards.graphql.dart';
 import '../graphql_client.dart';
 import 'card_item.dart';
+import 'edit_list_dialog.dart';
 import 'new_card_dialog.dart';
 import 'snackbar_alert.dart';
 
@@ -154,7 +155,19 @@ class _ListItemState extends State<ListItem> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 12,
             children:
-                <Widget>[Text(widget.list.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))] +
+                <Widget>[
+                  Row(
+                    children: [
+                      Text(widget.list.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      widget.list.isEditable
+                          ? IconButton(
+                              onPressed: () => showEditListDialog(context, list: widget.list),
+                              icon: Icon(Icons.edit_rounded),
+                            )
+                          : SizedBox(),
+                    ],
+                  ),
+                ] +
                 (cards
                         ?.map(
                           (card) => widget.isEditable
