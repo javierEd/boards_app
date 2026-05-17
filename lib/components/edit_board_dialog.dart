@@ -1,15 +1,15 @@
-import 'package:boards/graphql/fragments/board_fragment.graphql.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../constants.dart';
 import '../graphql/schema.graphql.dart';
+import '../graphql/fragments/board_fragment.graphql.dart';
 import '../graphql/mutations/update_board.graphql.dart';
 import '../graphql_client.dart';
 import 'board_form.dart';
 import 'snackbar_alert.dart';
 
-Future<dynamic> showEditBoardDialog(BuildContext context, {required board}) {
+Future<dynamic> showEditBoardDialog(BuildContext context, {required Fragment$BoardFragment board}) {
   return showDialog(
     context: context,
     builder: (context) {
@@ -46,7 +46,7 @@ class _EditBoardForm extends StatelessWidget {
     if (updatedBoard != null) {
       showSnackBarAlert(context, 'Board updated successfully');
 
-      if (board.slug == result.parsedData?.updateBoard.slug) {
+      if (board.slug == updatedBoard.slug) {
         context.pop();
       } else {
         context.pop();
