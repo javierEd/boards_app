@@ -3,6 +3,7 @@ fragment CardFragment on CardObject {
     listId
     content
     position
+    isEditable
     createdAt
     updatedAt
 }
