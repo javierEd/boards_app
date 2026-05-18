@@ -6,6 +6,7 @@ import '../graphql/fragments/card_fragment.graphql.dart';
 import '../graphql/mutations/update_card_list.graphql.dart';
 import '../graphql/mutations/update_card_position.graphql.dart';
 import '../graphql_client.dart';
+import 'edit_card_dialog.dart';
 import 'loading_dialog.dart';
 import 'snackbar_alert.dart';
 
@@ -93,7 +94,37 @@ class CardItem extends StatelessWidget {
       width: 296,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(16)),
-      child: Text(card.content),
+      child: Column(
+        spacing: 6,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          card.isEditable
+              ? Align(
+                  alignment: Alignment.centerRight,
+                  child: PopupMenuButton(
+                    icon: Icon(Icons.more_vert_rounded),
+                    tooltip: 'More',
+                    position: PopupMenuPosition.under,
+                    onSelected: (value) {
+                      switch (value) {
+                        case 1:
+                          showEditCardDialog(context, card: card);
+                          break;
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 1,
+                        child: ListTile(leading: Icon(Icons.edit_rounded), title: Text('Edit')),
+                      ),
+                    ],
+                  ),
+                )
+              : SizedBox(),
+
+          Text(card.content),
+        ],
+      ),
     );
   }
 }

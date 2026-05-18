@@ -1,0 +1,5 @@
+mutation UpdateCard($id: UUID!, $params: UpdateCardParams!) {
+    updateCard(id: $id, params: $params) {
+        ...CardFragment
+    }
+}
